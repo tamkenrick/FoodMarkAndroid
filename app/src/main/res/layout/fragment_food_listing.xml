@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.foodListing.FoodListingFragment">
+
+    <RelativeLayout
+        android:id="@+id/food_list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- "+" button at the bottom right of the ImageView -->
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="500px"
+            android:scaleType="centerCrop"
+            app:srcCompat="@drawable/food_background" />
+
+
+        <!-- List of food items -->
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:translationX="900px"
+            android:translationY="400px"
+            app:backgroundTint="#A2AD59"
+            app:layout_anchorGravity="bottom|end"
+            app:srcCompat="@drawable/add_image" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/food_list_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageView"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
