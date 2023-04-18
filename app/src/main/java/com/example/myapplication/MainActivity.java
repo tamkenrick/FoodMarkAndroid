@@ -4,8 +4,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
 
+import com.example.myapplication.ui.foodCreate.FoodCreateFragment;
+import com.example.myapplication.ui.foodListing.FoodListingFragment;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -61,5 +64,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    @Override
+    public void onBackPressed() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        fragmentManager.getBackStackEntryCount();
+
+        super.onBackPressed();
     }
 }

@@ -6,6 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
         android:orientation="vertical"
         android:padding="16dp">
 
@@ -47,8 +48,8 @@
                 android:id="@+id/vegetable_radio_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Vegetable"
-                android:checked="true" />
+                android:checked="true"
+                android:text="Vegetable" />
 
             <RadioButton
                 android:id="@+id/meat_radio_button"

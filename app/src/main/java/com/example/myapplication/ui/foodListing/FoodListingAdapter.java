@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -57,11 +58,20 @@ public class FoodListingAdapter extends RecyclerView.Adapter<FoodListingAdapter.
         holder.nameTextView.setText(food.getName());
         Date today = new Date();
         SimpleDateFormat dmyFormat = new SimpleDateFormat("yyyy-MM-dd");
-        holder.expiryDateTextView.setText(dmyFormat.format(food.getExpiryDate()));
+        holder.expiryDateTextView.setText(food.getExpiryDate());
 
-        long diffInMillies = Math.abs(food.getExpiryDate().getTime() - today.getTime());
-        long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
-        holder.expiryDayTextView.setText(diffInDays + " day(s)");
+        String dateString = food.getExpiryDate();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date date = dateFormat.parse(dateString);
+            long diffInMillies = Math.abs(date.getTime() - today.getTime());
+            long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            holder.expiryDayTextView.setText(diffInDays + " day(s)");
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+
 
         if(food.getImage()==null){
 

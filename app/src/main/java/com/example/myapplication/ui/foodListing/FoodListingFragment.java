@@ -9,6 +9,8 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -37,6 +39,8 @@ public class FoodListingFragment extends Fragment {
     private ImageView imageView;
     private FloatingActionButton addButton;
     private View view;
+
+    private FoodListingViewModel viewModel;
 
     private static final Logger logger = Logger.getLogger(FoodListingFragment.class.getName());
 
@@ -97,15 +101,62 @@ public class FoodListingFragment extends Fragment {
             public void onClick(View v) {
                 // Replace with code to open AddFoodFragment
                 FoodCreateFragment foodCreateFragment = new FoodCreateFragment();
-                FragmentManager fragmentManager = getFragmentManager();
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 fragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_content_main, foodCreateFragment)
-                        .addToBackStack(null)
+                        .add(R.id.nav_host_fragment_content_main, foodCreateFragment)
+                        .addToBackStack("FOOD Create")
                         .commit();
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        viewModel = new ViewModelProvider(this).get(FoodListingViewModel.class);
+        viewModel.needUpdateNetwork.observe(getActivity(), new Observer<Boolean>() {
+            @Override
+            public void onChanged(Boolean needUpdateNetwork) {
+                if (needUpdateNetwork) {
+                    callNetwork();
+                }
+            }
+        });
+    }
+
+    private void callNetwork() {
+        viewModel.needUpdateNetwork.postValue(false);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(apiUrl)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        // Set up API service
+        FoodApiService service = retrofit.create(FoodApiService.class);
+
+        // Make API call to get food list
+        Call<List<Food>> call = service.getFoodList(userId);
+        call.enqueue(new Callback<List<Food>>() {
+            @Override
+            public void onResponse(Call<List<Food>> call, Response<List<Food>> response) {
+                if (response.isSuccessful()) {
+                    foodList.clear();
+                    foodList.addAll(response.body());
+                    System.out.println("Response:");
+                    for(Food food : foodList){
+                        System.out.println(food.getExpiryDate());
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<Food>> call, Throwable t) {
+                Toast.makeText(getContext(), "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
