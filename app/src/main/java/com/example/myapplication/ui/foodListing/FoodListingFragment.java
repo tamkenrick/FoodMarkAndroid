@@ -8,10 +8,12 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
+import com.example.myapplication.ui.foodCreate.FoodCreateFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
@@ -94,6 +96,12 @@ public class FoodListingFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // Replace with code to open AddFoodFragment
+                FoodCreateFragment foodCreateFragment = new FoodCreateFragment();
+                FragmentManager fragmentManager = getFragmentManager();
+                fragmentManager.beginTransaction()
+                        .replace(R.id.nav_host_fragment_content_main, foodCreateFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
