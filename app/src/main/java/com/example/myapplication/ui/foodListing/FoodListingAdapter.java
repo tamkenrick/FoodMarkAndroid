@@ -1,8 +1,12 @@
 package com.example.myapplication.ui.foodListing;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,12 +32,14 @@ public class FoodListingAdapter extends RecyclerView.Adapter<FoodListingAdapter.
         public TextView nameTextView;
         public TextView expiryDayTextView;
 
+        public ImageView foodImageView;
         public TextView expiryDateTextView;
         public ViewHolder(View itemView) {
             super(itemView);
             nameTextView = itemView.findViewById(R.id.food_name);
             expiryDayTextView = itemView.findViewById(R.id.food_expiry_day);
             expiryDateTextView = itemView.findViewById(R.id.food_expiry_date);
+            foodImageView = itemView.findViewById(R.id.food_image);
         }
     }
 
@@ -56,6 +62,15 @@ public class FoodListingAdapter extends RecyclerView.Adapter<FoodListingAdapter.
         long diffInMillies = Math.abs(food.getExpiryDate().getTime() - today.getTime());
         long diffInDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
         holder.expiryDayTextView.setText(diffInDays + " day(s)");
+
+        if(food.getImage()==null){
+
+        }else {
+            String base64Image = food.getImage();
+            byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            holder.foodImageView.setImageBitmap(decodedByte);
+        }
     }
 
     @Override

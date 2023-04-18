@@ -100,5 +100,5 @@ public class FoodListingFragment extends Fragment {
         return view;
     }
 
-    
+
 }

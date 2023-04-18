@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <EditText
+            android:id="@+id/food_name_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Food Name" />
+
+        <Button
+            android:id="@+id/add_image_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Image" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nutrition Label" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/nutrition_label_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <Button
+            android:id="@+id/add_nutrition_item_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Item" />
+
+        <RadioGroup
+            android:id="@+id/food_type_radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/vegetable_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Vegetable"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/meat_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Meat" />
+
+            <RadioButton
+                android:id="@+id/fruit_radio_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fruit" />
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/expiry_date_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:text="Expiry Date" />
+
+        <DatePicker
+            android:id="@+id/expiry_date_picker"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <EditText
+            android:id="@+id/quantity_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Quantity" />
+
+        <EditText
+            android:id="@+id/quantity_unit_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Quantity Unit" />
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Save" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
