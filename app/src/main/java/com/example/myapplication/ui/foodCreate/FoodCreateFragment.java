@@ -40,7 +40,7 @@ public class FoodCreateFragment extends Fragment {
     private RecyclerView nutritionLabelRecyclerView;
     private Button addNutritionItemButton;
     private RadioGroup foodTypeRadioGroup;
-    private DatePicker expiryDatePicker;
+    private EditText expiryDatePicker;
     private EditText quantityEditText;
     private EditText quantityUnitEditText;
     private Button saveButton;
@@ -90,7 +90,7 @@ public class FoodCreateFragment extends Fragment {
                 String foodType = "null";
                 Double quantity = Double.parseDouble(quantityEditText.getText().toString());
                 String unit = quantityUnitEditText.getText().toString();
-                String expiryDate = "2024-04-30";
+                String expiryDate = expiryDatePicker.getText().toString();
 
                 // Create the Food objects with the values
                 List<Food> foods = new ArrayList<>();

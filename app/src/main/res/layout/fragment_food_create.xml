@@ -64,29 +64,23 @@
                 android:text="Fruit" />
         </RadioGroup>
 
-        <TextView
-            android:id="@+id/expiry_date_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingTop="16dp"
-            android:text="Expiry Date" />
-
-        <DatePicker
+        <EditText
             android:id="@+id/expiry_date_picker"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:hint="Expiry Date (e.g. 2023-04-29)" />
 
         <EditText
             android:id="@+id/quantity_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Quantity" />
+            android:hint="Quantity (e.g. 1)" />
 
         <EditText
             android:id="@+id/quantity_unit_edit_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Quantity Unit" />
+            android:hint="Quantity Unit (e.g. pcs)" />
 
         <Button
             android:id="@+id/save_button"
