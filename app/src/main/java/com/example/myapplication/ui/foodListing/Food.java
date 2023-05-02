@@ -1,6 +1,9 @@
 package com.example.myapplication.ui.foodListing;
 
+import com.example.myapplication.NutritionItem;
+
 import java.util.Date;
+import java.util.List;
 
 public class Food {
 
@@ -14,6 +17,7 @@ public class Food {
     private String name;
     private String expiryDate;
 
+    private List<NutritionItem> nutritionLabels;
     private String image;
 
     public Food(String name, String expiryDate) {
@@ -21,11 +25,16 @@ public class Food {
         this.expiryDate = expiryDate;
     }
 
-    public Food(String foodName, String foodType, double parseDouble, String unit, String expiryDate, Object o, Object o1) {
-    }
-
     public Food() {
 
+    }
+
+    public List<NutritionItem> getNutritionLabels() {
+        return nutritionLabels;
+    }
+
+    public void setNutritionLabels(List<NutritionItem> nutritionLabels) {
+        this.nutritionLabels = nutritionLabels;
     }
 
     public String getName() {

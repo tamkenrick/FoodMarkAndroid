@@ -1,29 +1,36 @@
 package com.example.myapplication.ui.foodCreate;
 
+import static android.app.Activity.RESULT_OK;
+
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.NutritionItem;
 import com.example.myapplication.R;
 import com.example.myapplication.ui.foodListing.Food;
 import com.example.myapplication.ui.foodListing.FoodApiService;
 import com.example.myapplication.ui.foodListing.FoodListingFragment;
 import com.example.myapplication.ui.foodListing.FoodListingViewModel;
-import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,11 +52,22 @@ public class FoodCreateFragment extends Fragment {
     private EditText quantityUnitEditText;
     private Button saveButton;
 
+    private String selectedFoodType;
+
+    private String base64Image;
+
     private FoodListingViewModel viewModel;
+
+    private NutritionLabelAdapter nutritionLabelAdapter;
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+    private Uri imageUri;
 
     public FoodCreateFragment() {
         // Required empty public constructor
     }
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -67,18 +85,54 @@ public class FoodCreateFragment extends Fragment {
         quantityUnitEditText = view.findViewById(R.id.quantity_unit_edit_text);
         saveButton = view.findViewById(R.id.save_button);
 
+        // Set up RecyclerView and adapter
+        nutritionLabelAdapter = new NutritionLabelAdapter(new ArrayList<>());
+        nutritionLabelRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        nutritionLabelRecyclerView.setAdapter(nutritionLabelAdapter);
+
         // Set up click listeners for buttons
         addImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implement button click behavior
+                // Create an intent to open the image picker or camera application
+                Intent intent = new Intent();
+                intent.setType("image/*");
+                intent.setAction(Intent.ACTION_GET_CONTENT);
+
+                // Start an activity to allow the user to select an image from their file or camera
+                startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
             }
         });
+
 
         addNutritionItemButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Implement button click behavior
+                NutritionItem nutritionItem = new NutritionItem("","");
+                nutritionLabelAdapter.getItems().add(nutritionItem);
+                nutritionLabelAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+        foodTypeRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // Update the selected food type variable based on the checked radio button's ID
+                switch (checkedId) {
+                    case R.id.vegetable_radio_button:
+                        selectedFoodType = "Vegetable";
+                        break;
+                    case R.id.meat_radio_button:
+                        selectedFoodType = "Meat";
+                        break;
+                    case R.id.fruit_radio_button:
+                        selectedFoodType = "Fruit";
+                        break;
+                    default:
+                        selectedFoodType = "Vegetable";
+                        break;
+                }
             }
         });
 
@@ -87,19 +141,21 @@ public class FoodCreateFragment extends Fragment {
             public void onClick(View v) {
                 // Get the values from the UI elements
                 String foodName = foodNameEditText.getText().toString();
-                String foodType = "null";
                 Double quantity = Double.parseDouble(quantityEditText.getText().toString());
                 String unit = quantityUnitEditText.getText().toString();
                 String expiryDate = expiryDatePicker.getText().toString();
+                List<NutritionItem> nutritionItems = nutritionLabelAdapter.getItems();
 
                 // Create the Food objects with the values
                 List<Food> foods = new ArrayList<>();
                 Food food = new Food();
                 food.setName(foodName);
-                food.setType("Vegetable");
+                food.setType(selectedFoodType);
+                food.setImage(base64Image);
                 food.setQuantity(quantity);
                 food.setUnit(unit);
                 food.setExpiryDate(expiryDate);
+                food.setNutritionLabels(nutritionItems);
 
                 foods.add(food);
 
@@ -137,6 +193,56 @@ public class FoodCreateFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
+            // Get the selected image URI and save it to a variable
+            imageUri = data.getData();
+
+            base64Image = compressImage(imageUri);
+        }
+    }
+
+    private String compressImage(Uri imageUri) {
+        try {
+            Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContext().getContentResolver(), imageUri);
+
+            // Calculate the new dimensions of the bitmap
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
+            float aspectRatio = (float) width / (float) height;
+            int newWidth = 250;
+            int newHeight = (int) (newWidth / aspectRatio);
+
+            // Create a new bitmap with the new dimensions
+            Bitmap newBitmap = Bitmap.createScaledBitmap(bitmap, newWidth, newHeight, true);
+
+            // Compress the new bitmap to a JPEG file with a quality of 80%
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            newBitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream);
+
+            // Compress the JPEG file to a byte array
+            byte[] bytes = outputStream.toByteArray();
+
+            // Check if the compressed file size is within the limit of 64kb
+            if (bytes.length > 64 * 1024) {
+                throw new Exception("Image file size is too large.");
+            }
+
+            // Convert the byte array to a base64 string
+            return Base64.encodeToString(bytes, Base64.DEFAULT);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     @Override
